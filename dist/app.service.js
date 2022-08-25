@@ -18,7 +18,8 @@ let AppService = class AppService {
             'https://api.studio.thegraph.com/query/9451/event-tracking/0.0.11';
     }
     async findAll() {
-        const InfoQuery = { query: `
+        const InfoQuery = {
+            query: `
       query {
         userDatas{
           id

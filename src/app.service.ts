@@ -6,14 +6,15 @@ import fetch from 'cross-fetch';
 export class AppService {
   private readonly graphBaseUrl: string;
   constructor() {
-    this.graphBaseUrl = 
+    this.graphBaseUrl =
       'https://api.studio.thegraph.com/query/9451/event-tracking/0.0.11'
-    
+
   }
 
   // used in app.controller to query data from subgraph
   async findAll(): Promise<Info[]> {
-    const InfoQuery = {query:`
+    const InfoQuery = {
+      query: `
       query {
         userDatas{
           id
