@@ -1,7 +1,9 @@
-import { Info } from './interface/subgraph.interface';
+import { CRED } from './app.entity';
 export declare class AppService {
     private readonly graphBaseUrl;
     constructor();
-    findAll(): Promise<Info[]>;
+    findAll(): Promise<CRED[]>;
     checkArray(array: any): boolean;
+    storeData(subgraphData: CRED): Promise<CRED>;
+    storeAll(): Promise<CRED[]>;
 }

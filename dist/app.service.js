@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 const cross_fetch_1 = require("cross-fetch");
+const app_entity_1 = require("./app.entity");
 let AppService = class AppService {
     constructor() {
         this.graphBaseUrl =
@@ -32,15 +33,58 @@ let AppService = class AppService {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(InfoQuery),
-        }).then((res) => res.json()).then((resJson) => {
-            var _a, _b;
-            console.log((_a = resJson === null || resJson === void 0 ? void 0 : resJson.data) === null || _a === void 0 ? void 0 : _a.userDatas);
-            return (_b = resJson === null || resJson === void 0 ? void 0 : resJson.data) === null || _b === void 0 ? void 0 : _b.userDatas;
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+            var _a;
+            return (_a = resJson === null || resJson === void 0 ? void 0 : resJson.data) === null || _a === void 0 ? void 0 : _a.userDatas;
         });
         return this.checkArray(InfoData) ? InfoData : [];
     }
     checkArray(array) {
         return Array.isArray(array) && array.length ? true : false;
+    }
+    async storeData(subgraphData) {
+        const { id, Userid, USERNAME, PASSWORD } = subgraphData;
+        const info = new app_entity_1.CRED();
+        info.id = id;
+        info.Userid = Userid;
+        info.USERNAME = USERNAME;
+        info.PASSWORD = PASSWORD;
+        await info.save();
+        return info;
+    }
+    async storeAll() {
+        const InfoQuery = {
+            query: `
+      query {
+        userDatas{
+          id
+          USERNAME
+          PASSWORD
+      }
+      }`
+        };
+        const InfoData = await (0, cross_fetch_1.default)(this.graphBaseUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(InfoQuery),
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+            var _a;
+            return (_a = resJson === null || resJson === void 0 ? void 0 : resJson.data) === null || _a === void 0 ? void 0 : _a.userDatas;
+        });
+        const infoArray = [];
+        for (let i = 0; i < InfoData.length; i++) {
+            const info = new app_entity_1.CRED();
+            info.Userid = InfoData[i].id;
+            info.USERNAME = InfoData[i].USERNAME;
+            info.PASSWORD = InfoData[i].PASSWORD;
+            await info.save();
+            infoArray.push(info);
+        }
+        return infoArray;
     }
 };
 AppService = __decorate([
